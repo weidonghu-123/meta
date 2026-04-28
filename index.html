@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Interactive code and model outputs for pork quality meta-analysis.">
+  <title>Pork Quality Meta-Analysis Outputs</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #f6f7f2;
+      --panel: #ffffff;
+      --text: #1d2420;
+      --muted: #626b65;
+      --line: #d8ddd6;
+      --accent: #17695b;
+      --accent-2: #9f542b;
+      --accent-3: #426fa7;
+      --shadow: 0 12px 36px rgba(36, 43, 38, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 48px;
+    }
+
+    .masthead {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      padding: 12px 0 24px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      margin: 0 0 8px;
+      color: var(--accent);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      max-width: 860px;
+      font-size: clamp(2rem, 5vw, 4rem);
+      line-height: 1.02;
+      letter-spacing: 0;
+    }
+
+    .summary {
+      margin: 14px 0 0;
+      max-width: 790px;
+      color: var(--muted);
+      font-size: 1.02rem;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(120px, 1fr));
+      gap: 10px;
+      min-width: 280px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      background: rgba(255, 255, 255, 0.68);
+      padding: 14px;
+      border-radius: 8px;
+    }
+
+    .stat strong {
+      display: block;
+      font-size: 1.6rem;
+      line-height: 1;
+    }
+
+    .stat span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 0.86rem;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: minmax(220px, 1fr) auto;
+      gap: 14px;
+      align-items: center;
+      margin: 24px 0 18px;
+    }
+
+    .search {
+      width: 100%;
+      height: 44px;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      color: var(--text);
+      font: inherit;
+      outline: none;
+    }
+
+    .search:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(23, 105, 91, 0.15);
+    }
+
+    .count {
+      color: var(--muted);
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+      align-items: stretch;
+    }
+
+    .card {
+      min-height: 150px;
+      display: grid;
+      grid-template-rows: auto 1fr auto;
+      gap: 12px;
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      transition: transform 160ms ease, border-color 160ms ease, box-shadow 160ms ease;
+    }
+
+    .card:hover,
+    .card:focus-visible {
+      transform: translateY(-2px);
+      border-color: rgba(23, 105, 91, 0.48);
+      box-shadow: 0 16px 38px rgba(36, 43, 38, 0.13);
+      outline: none;
+    }
+
+    .code {
+      display: inline-flex;
+      width: fit-content;
+      min-width: 52px;
+      height: 30px;
+      align-items: center;
+      justify-content: center;
+      padding: 0 10px;
+      border-radius: 999px;
+      background: rgba(23, 105, 91, 0.1);
+      color: var(--accent);
+      font-weight: 800;
+      font-size: 0.85rem;
+    }
+
+    .card:nth-child(3n + 2) .code {
+      background: rgba(159, 84, 43, 0.11);
+      color: var(--accent-2);
+    }
+
+    .card:nth-child(3n + 3) .code {
+      background: rgba(66, 111, 167, 0.11);
+      color: var(--accent-3);
+    }
+
+    .card h2 {
+      margin: 0;
+      font-size: 1.12rem;
+      line-height: 1.26;
+      letter-spacing: 0;
+    }
+
+    .file {
+      color: var(--muted);
+      font-size: 0.88rem;
+      overflow-wrap: anywhere;
+    }
+
+    .empty {
+      display: none;
+      margin: 22px 0 0;
+      padding: 18px;
+      border: 1px dashed var(--line);
+      border-radius: 8px;
+      color: var(--muted);
+      background: rgba(255, 255, 255, 0.58);
+    }
+
+    footer {
+      margin-top: 30px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 0.88rem;
+    }
+
+    @media (max-width: 780px) {
+      .masthead,
+      .toolbar {
+        grid-template-columns: 1fr;
+      }
+
+      .stats {
+        min-width: 0;
+      }
+
+      .count {
+        white-space: normal;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="shell">
+    <header class="masthead">
+      <div>
+        <p class="eyebrow">Data output browser</p>
+        <h1>Pork Quality Meta-Analysis Outputs</h1>
+        <p class="summary">Interactive code and model output pages for the global pork quality meta-analysis.</p>
+      </div>
+      <div class="stats" aria-label="Site summary">
+        <div class="stat">
+          <strong>15</strong>
+          <span>HTML outputs</span>
+        </div>
+        <div class="stat">
+          <strong>1</strong>
+          <span>GitHub Pages site</span>
+        </div>
+      </div>
+    </header>
+
+    <section class="toolbar" aria-label="Output controls">
+      <input class="search" id="search" type="search" placeholder="Search outputs" autocomplete="off">
+      <div class="count" id="count">Showing 15 outputs</div>
+    </section>
+
+    <section class="grid" id="outputs" aria-label="Available outputs">
+      <a class="card" href="A.html" data-title="Meat Redness a value A">
+        <span class="code">A</span>
+        <h2>Meat Redness (a* value)</h2>
+        <span class="file">A.html</span>
+      </a>
+      <a class="card" href="Asp.html" data-title="Aspartic Acid Asp">
+        <span class="code">Asp</span>
+        <h2>Aspartic Acid</h2>
+        <span class="file">Asp.html</span>
+      </a>
+      <a class="card" href="B.html" data-title="Meat Yellowness b value B">
+        <span class="code">B</span>
+        <h2>Meat Yellowness (b* value)</h2>
+        <span class="file">B.html</span>
+      </a>
+      <a class="card" href="CL.html" data-title="Cook Loss CL">
+        <span class="code">CL</span>
+        <h2>Cook Loss</h2>
+        <span class="file">CL.html</span>
+      </a>
+      <a class="card" href="CS.html" data-title="Color Score CS">
+        <span class="code">CS</span>
+        <h2>Color Score</h2>
+        <span class="file">CS.html</span>
+      </a>
+      <a class="card" href="DL.html" data-title="Drip Loss DL">
+        <span class="code">DL</span>
+        <h2>Drip Loss</h2>
+        <span class="file">DL.html</span>
+      </a>
+      <a class="card" href="Glu.html" data-title="Glutamate Glu">
+        <span class="code">Glu</span>
+        <h2>Glutamate</h2>
+        <span class="file">Glu.html</span>
+      </a>
+      <a class="card" href="IMF.html" data-title="Intramuscular Fat IMF">
+        <span class="code">IMF</span>
+        <h2>Intramuscular Fat</h2>
+        <span class="file">IMF.html</span>
+      </a>
+      <a class="card" href="L.html" data-title="Meat Lightness L">
+        <span class="code">L</span>
+        <h2>Meat Lightness (L*)</h2>
+        <span class="file">L.html</span>
+      </a>
+      <a class="card" href="LA.html" data-title="Linoleic Acid LA">
+        <span class="code">LA</span>
+        <h2>Linoleic Acid</h2>
+        <span class="file">LA.html</span>
+      </a>
+      <a class="card" href="MS.html" data-title="Marbling Score MS">
+        <span class="code">MS</span>
+        <h2>Marbling Score</h2>
+        <span class="file">MS.html</span>
+      </a>
+      <a class="card" href="OA.html" data-title="Oleic Acid OA">
+        <span class="code">OA</span>
+        <h2>Oleic Acid</h2>
+        <span class="file">OA.html</span>
+      </a>
+      <a class="card" href="PH24.html" data-title="pH 24h PH24">
+        <span class="code">PH24</span>
+        <h2>pH 24h</h2>
+        <span class="file">PH24.html</span>
+      </a>
+      <a class="card" href="PH45.html" data-title="pH 45 min PH45">
+        <span class="code">PH45</span>
+        <h2>pH 45 min</h2>
+        <span class="file">PH45.html</span>
+      </a>
+      <a class="card" href="SF.html" data-title="Shear Force SF">
+        <span class="code">SF</span>
+        <h2>Shear Force</h2>
+        <span class="file">SF.html</span>
+      </a>
+    </section>
+
+    <p class="empty" id="empty">No matching outputs.</p>
+
+    <footer>
+      Static site prepared for GitHub Pages. Upload this folder to a repository and enable Pages from the repository settings.
+    </footer>
+  </main>
+
+  <script>
+    const search = document.querySelector("#search");
+    const cards = Array.from(document.querySelectorAll(".card"));
+    const count = document.querySelector("#count");
+    const empty = document.querySelector("#empty");
+
+    function applyFilter() {
+      const query = search.value.trim().toLowerCase();
+      let visible = 0;
+
+      cards.forEach((card) => {
+        const text = card.dataset.title.toLowerCase();
+        const match = text.includes(query);
+        card.hidden = !match;
+        if (match) visible += 1;
+      });
+
+      count.textContent = `Showing ${visible} output${visible === 1 ? "" : "s"}`;
+      empty.style.display = visible === 0 ? "block" : "none";
+    }
+
+    search.addEventListener("input", applyFilter);
+  </script>
+</body>
+</html>
